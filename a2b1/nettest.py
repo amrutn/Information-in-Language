@@ -27,7 +27,7 @@ def generateData(datasize, marginoferror):
     bfin = np.concatenate((bgen, btrues), axis = 0)
     cfin = np.concatenate((cgen, ctrues), axis = 0)
 
-    x = np.array([afin, bfin])
+    x = np.concatenate((afin, bfin), axis = 1)
     y = cfin
-    print(x.shape, y.shape)
-    return (x,y)
+    #print(x.shape, y.shape)
+    return x,y
