@@ -1,5 +1,5 @@
 # Information-in-Language
-This is a fun little experiment where we are trying to understand the information in language! We attempt to measure the information content and vagueness of true/false statements in language within a given context by attempting to model them with a minimum complexity neural net.
+This is a fun little experiment where we are trying to understand the information in language! We attempt to measure the information content and vagueness of true/false statements in language within a given context by modeling them with a minimum complexity neural net.
 
 The sigmoid function classifer used in the neural nets is a fundamental result from the most basic systems studied in classical mechanics, and neural nets can theoretically model any continuous function. As a result, we believe neural networks can be used to define a new fundamental unit of information in the context of statements and language. In addition, by examining the the accuracy of the network with different complexities, we can begin to quantify vagueness in language and perhaps even look for more efficient representations of language!
 
