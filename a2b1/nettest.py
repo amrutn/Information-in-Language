@@ -27,11 +27,8 @@ def generateData(datasize, marginoferror):
     bfin = np.concatenate((bgen, btrues), axis = 0)
     cfin = np.concatenate((cgen, ctrues), axis = 0)
 
-<<<<<<< HEAD
     x = np.array(np.concatenate((afin, bfin), axis = 1))
-=======
     x = np.concatenate((afin, bfin), axis = 1)
->>>>>>> 63d3ea57f2d798c2da084983fe4f023c317a14c6
     y = cfin
-    #print(x.shape, y.shape)
+    print(x.shape, y.shape)
     return x,y
