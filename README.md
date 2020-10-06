@@ -9,6 +9,6 @@ Our initial toy models come from mathematics. We chose these statements since th
 
 This project could help us understand the most efficient underlying structures for neural representations of language and compare them to the way our brain is structured. It could also elucidate how growing up around different languages might change the way a person assigns meaning to phrases and perhaps even help pave the way for scientists to use different languages and invent their own languages as general and evolving tools to represent different types of information. A very long term goal would be for people to have the ability to not only change what the say when they are trying to communicate something, but also change the language representation they are using based on the context in which they are communicating.  
 
-This paper provides a theoretical basis for the information complexity of neural networks - http://math.bu.edu/people/mkon/nn30.pdf
+This paper provides a theoretical basis for the complexity of neural networks - http://math.bu.edu/people/mkon/nn30.pdf
 
-We will be building on the work on neural complexity from this paper - https://people.cs.umass.edu/~binds/papers/1997_Siegelmann_JNeurocomp.pdf
+We will be using similar methods to this paper - https://people.cs.umass.edu/~binds/papers/1997_Siegelmann_JNeurocomp.pdf
