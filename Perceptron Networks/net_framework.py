@@ -1,5 +1,6 @@
 import torch
-import torch.nn as nn
+from torch import nn, optim
+import torch.nn.functional as F
 import numpy as np
 
 #General Perceptron Neural Network Framework
@@ -20,60 +21,55 @@ class Neural_Network(nn.Module):
             Size of output layer
         hiddenSize : 1D list of ints
             Size of each hidden layer
-        learning_rate : float
-            Learning rate
+        binary : float
+        	Whether the output is binary or continuous
         '''
         self.inputSize = inputSize
         self.outputSize = outputSize
         self.hiddenSize = hiddenSize
-        self.learning_rate = learning_rate
-        # weights
-        self.weights = [torch.randn(self.inputSize, self.hiddenSize[0]).float()]
-        self.biases = []
-        for i in range(len(self.hiddenSize)):
-            if i < len(self.hiddenSize) - 1:
-                self.weights.append(torch.randn(self.hiddenSize[i], self.hiddenSize[i + 1]).float())
-            elif i == len(self.hiddenSize) - 1:
-                self.weights.append(torch.randn(self.hiddenSize[i], self.outputSize).float())
-            self.biases.append(torch.randn(self.hiddenSize[i], 1).float().T)
-        self.biases.append(torch.randn(self.outputSize, 1).float().T)  
-        
-        
-    def forward(self, X):
-        self.z_arr = [X]
-        self.z = X
-        for i in range(len(self.weights)):
-            self.z = torch.matmul(self.z, self.weights[i])
-            self.z = self.z + self.biases[i] 
-            self.z = self.sigmoid(self.z) # activation function
-            self.z_arr.append(self.z)
-        return self.z
-        
-    def sigmoid(self, s):
-        return 1 / (1 + torch.exp(-s))
-    
-    def sigmoidPrime(self, s):
-        # derivative of sigmoid
-        return s * (1 - s)
-    
-    def backward(self, X, y):
-        self.error = y - self.z_arr[-1] # error in output
-        self.delta = self.error * self.sigmoidPrime(self.z_arr[-1]) # derivative of sig to error 
-        for i in range(len(self.weights)):  
-            self.weights[-i-1] = self.weights[-i-1] + torch.matmul(torch.t(self.z_arr[-i-2]), self.delta) * self.learning_rate
-            self.biases[-i-1] = self.biases[-i-1] + torch.matmul(torch.from_numpy(np.ones(self.z_arr[-i-2].size()[0])).float().T, self.delta)* self.learning_rate
-            self.error = torch.matmul(self.delta, torch.t(self.weights[-i-1]))
-            self.delta = self.error * self.sigmoidPrime(self.z_arr[-i-2])
-        
-        
+
+        #Defining layers
+        self.layers = []
+        prev_size = inputSize
+        for hidden_num in hiddenSize:
+        	self.layers.append(nn.Linear(prev_size, hidden_num))
+        	self.layers.append(nn.Sigmoid())
+        	prev_size = hidden_num
+        self.layers.append(nn.Linear(prev_size, outputSize))
+        self.layers.append(nn.Sigmoid())
+
+        self.model = nn.Sequential(*self.layers)
+        #Using Binary cross entropy loss to train
+        self.criterion = nn.MSELoss()
+
+        self.optimizer = optim.SGD(self.parameters(), lr=learning_rate)
+
+    def forward(self, X, binary = False):
+        y = self.model(X)
+        if binary:
+        	y = torch.round(y)
+        return y
+
+    def l1error(self, y_true, y_pred):
+    	#Absolute Error
+    	return torch.mean(torch.abs(y_true - y_pred)).item()
+
+    def l2error(self, y_true, y_pred):
+    	#Squared error
+    	return torch.mean((y_true - y_pred)**2).item()
+
     def train(self, X, y):
-        # forward + backward pass for training
-        o = self.forward(X)
-        self.backward(X, y)
-        
+        # Training using binary cross entropy loss (one iteration of training)
+        for input, target in zip(X, y):
+	        self.optimizer.zero_grad()   # zero the gradient buffers
+	        output = self.forward(X)
+	        loss = self.criterion(output, y)
+	        loss.backward()
+	        self.optimizer.step()  # Does the update
+    
     def saveWeights(self, model, path):
         # we will use the PyTorch internal storage functions
-        torch.save(model, path)
+        torch.save(model.state_dict(), path)
         
     def predict(self, inp):
         return self.forward(inp)
