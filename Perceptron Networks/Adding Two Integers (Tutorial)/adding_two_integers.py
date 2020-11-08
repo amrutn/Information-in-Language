@@ -7,20 +7,17 @@ Original file is located at
     https://colab.research.google.com/drive/1rmZVJgOCI496uwdo49Jjo8DoioEByKTh
 """
 
-# comment out the line below if already run!
-!git clone https://github.com/amrutn/Information-in-Language.git
-
 import os
 import sys
 sys.path.insert(0, '..') #This line adds '..' to the path so we can import the net_framework python file
-# from net_framework import *
+from net_framework import *
 import numpy as np
 from IPython.display import clear_output, display
 import matplotlib.pyplot as plt
 import scipy.stats as sp
 
 py_file_location = "/content/Information-in-Language/Perceptron Networks"
-sys.path.append(os.path.abspath(py_file_location))
+sys.path.append(os.path .abspath(py_file_location))
 from net_framework import *
 
 import torch
@@ -28,87 +25,7 @@ from torch import nn, optim
 import torch.nn.functional as F
 import numpy as np
 
-"""We will enable GPU from Notebook settings for faster training
-- In settings, select Edit > Notebook Settings
-- Select GPU from Hardware Accelerator dropdown list
-"""
-
-if not torch.cuda.is_available():
-  raise Exception("GPU not availalbe. CPU training will be slow.")
-
-print("device name", torch.cuda.get_device_name(0))
-
 """The following cell allows you to toggle warnings on and off. It helps the readability of the results but warnings in general are important and should not be ignored."""
-
-from IPython.display import HTML
-HTML('''<script>
-code_show_err=false; 
-function code_toggle_err() {
- if (code_show_err){
- $('div.output_stderr').hide();
- } else {
- $('div.output_stderr').show();
- }
- code_show_err = !code_show_err
-} 
-$( document ).ready(code_toggle_err);
-</script>
-To toggle on/off output_stderr, click <a href="javascript:code_toggle_err()">here</a>.''')
-
-"""Hi! This notebook will serve as a tutorial to walk through the basics of this project. In this notebook, we will model the truthfulness of a class of mathematical statements that amount to the addition of two integers between -5 and 5. We need to limit the range of integers because it would take an infinite amount of compute power to fully conceptualize the addition of any two integers with no bounds. 
-
-To model the information content of the chosen set of statements, we will go through the following procedure-
-
-1. Defining a "sub-language" to constrain the set of statements. This will require going through the process of formalizing what the set of statements you want to model are and how to interpret them. 
-2. Finding an efficient representation that can be inputted into neural networks for the characters in the language and the statements you want to model. For the most part, we will be using one-hot vectors for this task (https://en.wikipedia.org/wiki/One-hot). 
-3. Generating training and validation datasets for our statements. These datasets should consist of input vectors that represent legal statements in the "sub-language" and the associated truth values for each of these statements. 
-4. Use the data to train a set of neural networks with different structures neural complexities. The ones with training error below a certain threshold will be validated. We will be using a threshold value of 0.05 for this notebok. The networks with validation error below that threshold will be classified as "good" networks and the "good" network with minimal neural complexity will be used as the final model to represent the statements. 
-5. (optional) Try finding the information complexity (the amount data it takes to train the network) of that network structure by training it with different amounts of training data and seeing how much training data is required for it to have training and validation errors below the threshold. 
-6. Save the statistics from the final network. This will include things such as the final neural complexity (the number of hidden layer nodes in the network), information complexity (the amount data it takes to train the network), final validation/training error, final weights of the network and plots of the training error as the number of training cycles increases.
-
-## Step 1: Defining a Sub-Language
-
-This is a purely conceptual step but is easily the most important and difficult part of this project. We need to define a language to constrain the set of statements we are working with. To do this, we need to define three things:
-
-1. The characters in the language
-2. The way these characters are legally allowed to be combined. 
-3. How to determine the truthfulness of a given statement.
-
-In our case, the set of characters we are using can be split into two groups. 
-
-1. The set of integers from -5 to 5, inclusive. We will call this set, $Z$.
-2. The symbols '+' and '='.
-
-These characters can only legally be combined in a single way.
-
-Let $z_1$, $z_2$ and $z_3$ be three elements of $Z$. Then, we define a legal 'sentence' in this language as the following combination of characters: 
-
-$$z_1 + z_2 = z_3$$.
-
-And the veracity of these statements can be understood in the normal way, the statement is true if and only if the first two integers add up to the third.
-
-At first glance, it might seem unecessary to model the '+' and '=' symbols since they are in the same positions every time, but this is just a very simple example and modeling these types of symbols will be necessary when dealing with more complex syntaxes in the future.
-
-## Step 2: Finding a Representation
-
-We now need to represent our language in a way that can be understood by the neural network. To do this, we will be using one-hot vectors (https://en.wikipedia.org/wiki/One-hot) to represent each character in the network. Each vector will have a dimensionality of 13 to represent each of the 11 integers as well the '+' and '=' symbols. 
-
-We will use the following mapping: 
-
-'+' maps to [1,0,0,...,0,0]  
-'=' maps to [0,1,0,...,0,0]  
-'-5' maps to [0,0,1,...,0,0]  
-...  
-'4' maps to [0,0,0,...,1,0]  
-and  
-'5' maps to [0,0,0,...,0,1]  
-
-Each sentence in the langauge can be thought of as a sequence of five of these vectors stacked end to end.
-
-## Step 3: Generating Training/Validation Data
-
-Now, we have to write functions that will generate training or validation datasets on command.
-"""
 
 def one_hot(symbols):
     '''
