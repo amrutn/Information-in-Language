@@ -11,4 +11,8 @@ By looking at the trained weights of the networks, this project could help us un
 
 This paper provides a theoretical basis for the complexity of neural networks - http://math.bu.edu/people/mkon/nn30.pdf
 
+This paper analyzes deep neural networks using the Information Bottleneck Principle - https://arxiv.org/pdf/1503.02406.pdf
+
+Here is a summary on the Information Bottleneck Principle (the wikipedia article is also informative) - https://www.cs.huji.ac.il/labs/learning/Papers/allerton.pdf
+
 Here is a link to the paper on color naming systems - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6077716/
