@@ -10,7 +10,7 @@ import numpy as np
 #Network Implementation
 
 class Neural_Network(nn.Module):
-    def __init__(self, inputSize, outputSize, hiddenSize, learning_rate):
+    def __init__(self, inputSize, outputSize, hiddenSize, learning_rate, probabability = False):
         super(Neural_Network, self).__init__()
         '''
         Params
@@ -27,7 +27,7 @@ class Neural_Network(nn.Module):
         self.inputSize = inputSize
         self.outputSize = outputSize
         self.hiddenSize = hiddenSize
-
+        self.probabability = probabability
         #Defining layers
         self.layers = []
         prev_size = inputSize
@@ -42,10 +42,12 @@ class Neural_Network(nn.Module):
         #Using Binary cross entropy loss to train
         self.criterion = nn.MSELoss()
 
-        self.optimizer = optim.SGD(self.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
 
     def forward(self, X, binary = False):
         y = self.model(X)
+        if self.probabability:
+        	y = y/torch.sum(y)
         if binary:
         	y = torch.round(y)
         return y
