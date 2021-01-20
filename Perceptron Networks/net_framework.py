@@ -33,7 +33,7 @@ class Neural_Network(nn.Module):
         prev_size = inputSize
         for hidden_num in hiddenSize:
         	self.layers.append(nn.Linear(prev_size, hidden_num))
-        	self.layers.append(nn.Sigmoid())
+        	self.layers.append(nn.ELU())
         	prev_size = hidden_num
         self.layers.append(nn.Linear(prev_size, outputSize))
         self.layers.append(nn.Sigmoid())
