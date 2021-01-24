@@ -14,7 +14,7 @@ locations = locations.sort_values('#cnum')
 chip_num = list(locations['#cnum'])
 lab_norm = [[row[2], row[3], row[4]] for row in locations.itertuples()]
 
-# Filters dataset for specific language for neural net input
+# Filters dataset for specific language for neural network input
 class LanguageData:
 
     def __init__(self, language_number):
