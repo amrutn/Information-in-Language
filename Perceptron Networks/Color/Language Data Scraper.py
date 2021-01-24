@@ -1,6 +1,7 @@
 import pandas as pd
 
-# Read and clean data 
+# Read and clean data
+# Access to color coordinates
 term_data = pd.read_csv('Perceptron Networks/Color/term.txt', sep="\t", header=None)
 term_data.columns = ["#Lnum", "#snum", "#cnum", "Term Abbrev"]
 cnum_data = pd.read_csv('Perceptron Networks/Color/cnum-vhcm-lab-new.txt', sep="\t")
@@ -15,6 +16,7 @@ chip_num = list(locations['#cnum'])
 lab_norm = [[row[2], row[3], row[4]] for row in locations.itertuples()]
 
 # Filters dataset for specific language for neural network input
+# Access to chip percentages and number of colors
 class LanguageData:
 
     def __init__(self, language_number):
