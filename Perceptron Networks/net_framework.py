@@ -62,10 +62,12 @@ class Neural_Network(nn.Module):
 
     def train(self, X, y):
         # Training using binary cross entropy loss (one iteration of training)
-        output = self.forward(X)
-        loss = self.criterion(output, y)
-        loss.backward()
-        self.optimizer.step()  # Does the update
+        for input, target in zip(X,y):
+            self.optimizer.zero_grad()
+            output = self.forward(input)
+            loss = self.criterion(output, target)
+            loss.backward()
+            self.optimizer.step()  # Does the update
     
     def saveWeights(self, model, path):
         # we will use the PyTorch internal storage functions
