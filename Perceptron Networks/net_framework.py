@@ -33,7 +33,7 @@ class Neural_Network(nn.Module):
         prev_size = inputSize
         for hidden_num in hiddenSize:
         	self.layers.append(nn.Linear(prev_size, hidden_num))
-        	self.layers.append(nn.Sigmoid())
+        	self.layers.append(nn.ELU())
         	prev_size = hidden_num
         self.layers.append(nn.Linear(prev_size, outputSize))
         self.layers.append(nn.Sigmoid())
@@ -62,12 +62,12 @@ class Neural_Network(nn.Module):
 
     def train(self, X, y):
         # Training using binary cross entropy loss (one iteration of training)
-        for input, target in zip(X, y):
-	        self.optimizer.zero_grad()   # zero the gradient buffers
-	        output = self.forward(X)
-	        loss = self.criterion(output, y)
-	        loss.backward()
-	        self.optimizer.step()  # Does the update
+        for input, target in zip(X,y):
+            self.optimizer.zero_grad()
+            output = self.forward(input)
+            loss = self.criterion(output, target)
+            loss.backward()
+            self.optimizer.step()  # Does the update
     
     def saveWeights(self, model, path):
         # we will use the PyTorch internal storage functions

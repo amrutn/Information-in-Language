@@ -14,7 +14,7 @@ class LanguageData:
         cnum_data = pd.read_csv('Perceptron Networks/Color/cnum-vhcm-lab-new.txt', sep="\t")
 
         locations = cnum_data[['#cnum']]
-        locations['Normalized-L'] = (cnum_data['L*'] - cnum_data['L*'].mean())/(cnum_data['L*'] - cnum_data['L*'].mean()).max()
+        locations['Normalized-L'] = (cnum_data['L*'] - cnum_data['L*'].mean())/(cnum_data['L*'] - cnum_data['L*'].mean()).std() * 1/2
         locations['Normalized-a'] = (cnum_data['a*'] - cnum_data['a*'].mean())/(cnum_data['a*'] - cnum_data['a*'].mean()).std() * 1/2
         locations['Normalized-b'] = (cnum_data['b*'] - cnum_data['b*'].mean())/(cnum_data['b*'] - cnum_data['b*'].mean()).std() * 1/2
 
