@@ -9,9 +9,9 @@ class LanguageData:
 
         # Read and clean data
         # Access to color coordinates
-        self.term_data = pd.read_csv('Perceptron Networks/Color/term.txt', sep="\t", header=None)
+        self.term_data = pd.read_csv('term.txt', sep="\t", header=None)
         self.term_data.columns = ["#Lnum", "#snum", "#cnum", "Term Abbrev"]
-        cnum_data = pd.read_csv('Perceptron Networks/Color/cnum-vhcm-lab-new.txt', sep="\t")
+        cnum_data = pd.read_csv('cnum-vhcm-lab-new.txt', sep="\t")
 
         locations = cnum_data[['#cnum']]
         locations['Normalized-L'] = (cnum_data['L*'] - cnum_data['L*'].mean())/(cnum_data['L*'] - cnum_data['L*'].mean()).std() * 1/2
