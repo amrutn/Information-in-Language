@@ -81,8 +81,15 @@ class TrainingHelper:
         output_test = torch.FloatTensor(chip_test)
         return input_train, output_train, input_test, output_test
 
-
-# In[4]:
+def random_meaning_offset(size, variance=64):
+	offset = []
+	distances = np.abs(np.random.normal(loc=0,scale = np.sqrt(variance), size=size))
+	for dist in distances:
+		delta_coords = np.random.uniform(0,1,3)
+		delta_coords /= np.linalg.norm(delta_coords)
+		delta_coords *= dist
+		offset.append(delta_coords)
+	return torch.FloatTensor(offset)
 
 
 class Train:
@@ -111,8 +118,9 @@ class Train:
 
                 input_train, output_train, input_test, output_test = self.th.shuffle()
 
-                for i in range(self.th.num_iters):  
-                    NN.train(input_train, output_train)
+                for i in range(self.th.num_iters):
+                    curr_input_train = input_train + random_meaning_offset(input_train.shape[0])
+                    NN.train(curr_input_train, output_train)
                     validation_error = NN.l1error(output_test, NN(input_test))
                     #Printing error
 #                     if i == 0: 
@@ -144,7 +152,7 @@ class Train:
 
 # In[5]:
 
-for i in range(36, 41):
+for i in range(1, 50):
     language_1 = Train(10, shape_collection, 100, 5, 0.2, i)
     language_1.save_file()
 
