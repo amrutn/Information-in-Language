@@ -56,7 +56,7 @@ for node in node_num:
         else:
             trickle([node], (layer-1)/2, node)      
 
-# print(shape_collection)
+#print(shape_collection, flush=True)
 
 
 # In[3]:
@@ -69,6 +69,7 @@ class TrainingHelper:
         self.input_size = 3
         self.rate = 0.001
         self.language = LD.LanguageData(language_number)
+        self.normalizations = np.array(self.language.normalizations)
         self.colors_num = self.language.colors_num()
         self.test_train_split_percentage = test_train_split_percentage
         self.network_shapes = [(self.input_size, s, self.colors_num) for s in network_hidden_sizes]
@@ -82,8 +83,15 @@ class TrainingHelper:
         output_test = torch.FloatTensor(chip_test)
         return input_train, output_train, input_test, output_test
 
-
-# In[4]:
+    def random_input_offset(self, size, variance=64):
+        offset = []
+        distances = np.abs(np.random.normal(loc=0,scale = np.sqrt(variance), size=size))
+        for dist in distances:
+            delta_coords = np.random.uniform(0,1,3)
+            delta_coords /= np.linalg.norm(delta_coords)
+            delta_coords *= dist/self.normalizations
+            offset.append(delta_coords)
+        return torch.FloatTensor(offset)
 
 
 class Train:
@@ -100,10 +108,10 @@ class Train:
 
     def run(self):
         for net_num, shape in enumerate(self.th.network_shapes):
-            print("Training: ",shape)
+            print("Training: ",shape, flush=True)
             net_error_arr = []
             for j in range(self.num_average):
-                print('Run ' + str(j+1))
+                print('Run ' + str(j+1), flush = True)
                 NN = Neural_Network(inputSize = shape[0], outputSize = shape[2],
                                     hiddenSize = shape[1] , learning_rate = self.th.rate)
                 error_arr = []
@@ -112,8 +120,9 @@ class Train:
 
                 input_train, output_train, input_test, output_test = self.th.shuffle()
 
-                for i in range(self.th.num_iters):  
-                    NN.train(input_train, output_train)
+                for i in range(self.th.num_iters):
+                    curr_input_train = input_train + self.th.random_input_offset(size=input_train.shape[0])
+                    NN.train(curr_input_train, output_train)
                     validation_error = NN.l1error(output_test, NN(input_test))
                     #Printing error
 #                     if i == 0: 
@@ -129,7 +138,7 @@ class Train:
                     #waiting for number 'too small' decreases or increases in validation error before ending training
                     if (prev_error < validation_error) and i > 100:
                         if strike > self.num_strikes:
-                            print("Complete at iteration ", i, "\nFinal error: ", np.min(error_arr), "\n")
+                            print("Complete at iteration ", i, "\nFinal error: ", np.min(error_arr), "\n", flush=True)
                             break
                         else:
                             strike += 1
@@ -145,9 +154,10 @@ class Train:
 
 # In[5]:
 
-for i in range(31, 36):
-    language_1 = Train(10, shape_collection, 100, 5, 0.2, i)
-    language_1.save_file()
+for i in range(1, 50):
+    language = Train(10, shape_collection, 100, 5, 0.2, i)
+    language.save_file()
+
 
 
     # In[6]:
