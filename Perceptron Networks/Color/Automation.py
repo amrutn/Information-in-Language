@@ -10,6 +10,7 @@ import numpy as np
 import json
 import Language_Data_Scraper as LD
 sys.path.insert(0, '..')
+import sklearn
 from net_framework import *
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -144,7 +145,7 @@ class Train:
 
 # In[5]:
 
-for i in range(1, 111):
+for i in range(31, 36):
     language_1 = Train(10, shape_collection, 100, 5, 0.2, i)
     language_1.save_file()
 
