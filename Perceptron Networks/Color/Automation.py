@@ -153,7 +153,7 @@ class Train:
 
 # In[5]:
 
-for i in range(1, 50):
+for i in range(5, 11):
     language = Train(10, shape_collection, 100, 5, 0.2, i)
     language.save_file()
 
