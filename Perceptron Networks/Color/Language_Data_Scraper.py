@@ -12,11 +12,14 @@ class LanguageData:
         self.term_data = pd.read_csv('term.txt', sep="\t", header=None)
         self.term_data.columns = ["#Lnum", "#snum", "#cnum", "Term Abbrev"]
         cnum_data = pd.read_csv('cnum-vhcm-lab-new.txt', sep="\t")
-
+        #These normalizations are used to normalize the added noise in automation.py
+        self.normalizations = [(cnum_data['L*'] - cnum_data['L*'].mean()).std() * 2,\
+         (cnum_data['a*'] - cnum_data['a*'].mean()).std() * 2,\
+         (cnum_data['b*'] - cnum_data['b*'].mean()).std() * 2]
         locations = cnum_data[['#cnum']]
-        locations['Normalized-L'] = (cnum_data['L*'] - cnum_data['L*'].mean())/(cnum_data['L*'] - cnum_data['L*'].mean()).std() * 1/2
-        locations['Normalized-a'] = (cnum_data['a*'] - cnum_data['a*'].mean())/(cnum_data['a*'] - cnum_data['a*'].mean()).std() * 1/2
-        locations['Normalized-b'] = (cnum_data['b*'] - cnum_data['b*'].mean())/(cnum_data['b*'] - cnum_data['b*'].mean()).std() * 1/2
+        locations['Normalized-L'] = (cnum_data['L*'] - cnum_data['L*'].mean())/self.normalizations[0]
+        locations['Normalized-a'] = (cnum_data['a*'] - cnum_data['a*'].mean())/self.normalizations[1]
+        locations['Normalized-b'] = (cnum_data['b*'] - cnum_data['b*'].mean())/self.normalizations[2]
 
         locations = locations.sort_values('#cnum')
         self.chip_num = list(locations['#cnum'])
